@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin">
+    <meta http-equiv="Cross-Origin-Embedder-Policy" content="require-corp">
+    <title>Homepage </title>
+    <link href="https://fonts.googleapis.com/css2?family=Vidaloka&display=swap" rel="stylesheet"> <!--for font-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <style>
+        body {background-color: #faf3f3; font-family: 'Vidaloka', serif;}
+        h1 {color: #5d071e; font-family: 'Vidaloka', serif;  margin-bottom: 0;}
+        h2 {margin-top: 0}
+    #artwork {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        padding: 100px;
+    }
+
+    #artwork div {
+        background-color: #fff7f7;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+        text-align: left;
+        position: relative; 
+        padding-bottom: 0px;
+    }
+
+    #artwork img { width: 100%; height: auto; border-radius: 6px;}
+
+    .search-container {
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+#searchInput {
+    width: 100%;
+    padding: 15px 10px 15px 10px;
+    border-radius: 30px;
+    border: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+    font-size: 16px;
+    outline: none;
+}
+
+.search-icon {
+    position: absolute;
+    right: 0px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: #666;
+}
+nav{ display: flex; justify-content: space-between; align-items: center; padding: 0px;}
+        .nav-btn {
+            padding: 8px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        .galleries-nav {
+            background-color: #e8e8e8;
+            color: #333;
+        }
+        header {background-color: white; margin-bottom: 40px;;
+}
+  
+.save-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: rgba(0,0,0,0.1);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .save-btn:hover {background-color: rgba(0,0,0,0.3);}
+
+        .auth-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .user-avatar {
+            display: none; /* Hide the avatar */
+        }
+
+        .logout-btn {
+            padding: 8px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            background-color: #5d071e;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            background-color: #7a0a26;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 10px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: black;
+        }
+
+        .gallery-item {
+            background-color: #fff;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .gallery-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .gallery-title {
+            font-size: 1.2em;
+            color: #5d071e;
+            margin: 0;
+        }
+
+        .gallery-meta {
+            color: #666;
+            font-size: 0.9em;
+            margin: 5px 0;
+        }
+
+        .gallery-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .gallery-btn {
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .select-btn {
+            background-color: #5d071e;
+            color: white;
+        }
+
+        .select-btn:hover {
+            background-color: #7a0a26;
+        }
+
+        .delete-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+
+        .gallery-artworks {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .artwork-item {
+            position: relative;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .artwork-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .artwork-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .artwork-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px 10px;
+            font-size: 0.8em;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .artwork-item:hover .artwork-info {
+            opacity: 1;
+        }
+
+        .empty-gallery {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>     
+            <h1 style="font-size:45px; margin-left: 40px;"> ArtCurator</h1>     
+            <div class="auth-container">
+                <div id="user-info" class="user-info" style="display: none;">
+                    <span id="user-name"></span>
+                    <button id="create-gallery-btn" class="nav-btn galleries-nav">Create Gallery</button>
+                    <a href="#" class="nav-btn galleries-nav" id="view-galleries-btn">View Galleries</a>
+                    <a href="/logout" class="logout-btn">Logout</a>
+                </div>
+                <div id="g_id_signin" class="g_id_signin"></div>
+            </div>
+        </nav>
+        <h2 style="font-size: 15px; margin-left: 40px;"> Create Your Personal Gallery</h2>
+    </header>
+
+    <form id="search-form" class="search-container" onsubmit="handleSearch(event)">
+        <input 
+            type="text" 
+            id="searchInput" 
+            placeholder=" Search for art, artist, styles..." 
+            required
+        />
+        <button type="submit" class="search-icon">
+            <i class="fas fa-search"></i>
+        </button>
+    </form>
+
+    <div id="artwork"> </div>
+    
+    <div id="about">
+    </div> 
+
+    <div id="galleries-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Your Galleries</h2>
+            <div id="galleries-list"></div>
+        </div>
+    </div>
+
+    <script>
+         let page = 1;
+        let isLoading = false; 
+        let currentGalleryId = null;
+
+    function handleSearch(event) {
+        event.preventDefault();
+            const query = document.getElementById('searchInput').value.trim();
+            
+            if (query) {
+                page = 1;
+                document.getElementById("artwork").innerHTML = ''; // Clear existing results
+                fetchArtwork(query);
+            } else { alert('Please enter a term to search for.');}
+        }
+        // get API
+        function fetchArtwork(query) {
+            if (isLoading) return; // Prevent fetching if already in progress
+            isLoading = true;
+            
+            fetch(`https://api.artic.edu/api/v1/artworks/search?q=${query}&fields=title,image_id,artist_title,artist_display,classification_titles,description,date_display&&page=${page}&limit=9`)
+                .then(res => {return res.text();})
+                .then(data => {
+                    data = JSON.parse(data)
+                    displayArtworks(data.data);
+                    isLoading = false;
+                    page++; // Increment page for the next request
+
+                })
+                .catch(error => console.log(error)); isLoading = false;
+        }
+
+        // Display the artwork in the page
+        function displayArtworks(artworks) {
+            const container = document.getElementById("artwork");
+            let i = 0;
+            artworks.forEach(artwork => {
+                art_each = document.createElement("div");
+                art_each.innerHTML = `
+                    <img src="${`https://www.artic.edu/iiif/2/${artwork.image_id}/full/400,/0/default.jpg`}">
+                        <button class="save-btn" id="save-btn-${i}"><i class="fas fa-bookmark"></i></button>
+                         <!-- ADD DATABASE CONNECTION HERE WHEN SAVE IS CLICKED -->
+                        <h3 style="margin-bottom:5px; margin-top: 10px">${artwork.title}</h3>
+                        <p"margin-bottom:0px; ">${artwork.artist_title}, ${artwork.date_display}</p>
+                        <!-- EXTRA ART DATA IS HERE (but not displayed on screen. Put in database?) -->
+                        <!-- <p>${artwork.artist_display}</p> -->
+                        <!-- <p>${artwork.classification_titles}</p>-->
+                `;
+                container.appendChild(art_each);
+
+
+                // add an event listener to the button
+                const btn = document.getElementById(`save-btn-${i}`);
+                updateSaveButtonHandler(btn, artwork);
+
+                i++;
+            });
+        }
+            function checkScrollPosition() {
+            const scrollPosition = window.innerHeight + window.scrollY;
+            const bottomPosition = document.documentElement.scrollHeight;
+            
+            if (scrollPosition >= bottomPosition - 100) { 
+                // fetch again
+                const query = document.getElementById('searchInput').value.trim();
+                if (query) {
+                    fetchArtwork(query); 
+                }
+            }
+        }
+
+        window.addEventListener('scroll', checkScrollPosition);
+        window.onload = fetchArtwork("France");
+        
+        // Initialize Google Sign-In when the script loads
+        function initializeGoogleSignIn() {
+            try {
+                google.accounts.id.initialize({
+                    client_id: '16218638873-e13qud162q6q342aqg8f0pu7pmgeu2bb.apps.googleusercontent.com',
+                    callback: handleCredentialResponse,
+                    auto_select: false,
+                    cancel_on_tap_outside: true
+                });
+                
+                const buttonDiv = document.getElementById('g_id_signin');
+                if (buttonDiv) {
+                    google.accounts.id.renderButton(
+                        buttonDiv,
+                        { 
+                            theme: 'outline',
+                            size: 'large',
+                            type: 'standard',
+                            shape: 'rectangular',
+                            text: 'signin_with',
+                            logo_alignment: 'left'
+                        }
+                    );
+                } else {
+                    console.error('Button container not found');
+                }
+            } catch (error) {
+                console.error('Error initializing Google Sign-In:', error);
+            }
+        }
+
+        // Call initialization when the Google script is loaded
+        window.onload = function() {
+            if (typeof google !== 'undefined') {
+                initializeGoogleSignIn();
+            } else {
+                console.error('Google Sign-In script not loaded');
+            }
+            
+            // Check if user is already logged in
+            fetch('/api/user')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('User data received:', data);
+                    if (data.user) {
+                        console.log('User is logged in:', data.user);
+                        const userInfo = document.getElementById('user-info');
+                        const userName = document.getElementById('user-name');
+                        const signInButton = document.getElementById('g_id_signin');
+                        
+                        if (userInfo && userName && signInButton) {
+                            userInfo.style.display = 'flex';
+                            userName.textContent = data.user.name || 'User';
+                            signInButton.style.display = 'none';
+                            console.log('User info elements updated');
+                        } else {
+                            console.error('Required elements not found');
+                        }
+                    } else {
+                        console.log('No user logged in');
+                        const userInfo = document.getElementById('user-info');
+                        const signInButton = document.getElementById('g_id_signin');
+                        
+                        if (userInfo && signInButton) {
+                            userInfo.style.display = 'none';
+                            signInButton.style.display = 'block';
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error checking user status:', error);
+                });
+        };
+
+        function handleCredentialResponse(response) {
+            if (response.credential) {
+                console.log('Received credential:', response.credential);
+                fetch('/auth/google/callback', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ credential: response.credential })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.text().then(text => {
+                            try {
+                                const errorData = JSON.parse(text);
+                                throw new Error(errorData.details || errorData.error || 'Authentication failed');
+                            } catch (e) {
+                                throw new Error(text || 'Authentication failed');
+                            }
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Authentication successful:', data);
+                    if (data.status === 'success' && data.user) {
+                        const userInfo = document.getElementById('user-info');
+                        const userName = document.getElementById('user-name');
+                        const signInButton = document.getElementById('g_id_signin');
+                        
+                        if (userInfo && userName && signInButton) {
+                            userInfo.style.display = 'flex';
+                            userName.textContent = data.user.name || 'User';
+                            signInButton.style.display = 'none';
+                            console.log('User info updated after login');
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Authentication error:', error);
+                    alert('Authentication failed: ' + error.message);
+                });
+            } else {
+                console.error('No credential received');
+                alert('No credential received from Google');
+            }
+        }
+
+        document.getElementById('create-gallery-btn')?.addEventListener('click', createGallery);
+        document.getElementById('view-galleries-btn')?.addEventListener('click', viewGalleries);
+        document.querySelector('.close')?.addEventListener('click', () => {
+            document.getElementById('galleries-modal').style.display = 'none';
+        });
+
+        async function createGallery() {
+            try {
+                const response = await fetch('/api/galleries', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                if (data.status === 'success') {
+                    currentGalleryId = data.gallery.id; // Set the current gallery ID
+                    alert('Gallery created successfully! You can now save artworks to this gallery.');
+                    viewGalleries();
+                } else {
+                    alert(data.details || 'Failed to create gallery');
+                }
+            } catch (error) {
+                console.error('Error creating gallery:', error);
+                alert('Failed to create gallery');
+            }
+        }
+
+        async function viewGalleries() {
+            try {
+                const response = await fetch('/api/galleries');
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    const galleriesList = document.getElementById('galleries-list');
+                    galleriesList.innerHTML = '';
+                    
+                    // Set currentGalleryId to the first gallery if none is set
+                    if (!currentGalleryId && data.galleries.length > 0) {
+                        currentGalleryId = data.galleries[0].id;
+                    }
+                    
+                    if (data.galleries.length === 0) {
+                        galleriesList.innerHTML = `
+                            <div class="empty-gallery">
+                                <p>You don't have any galleries yet. Create one to start saving artworks!</p>
+                            </div>
+                        `;
+                        return;
+                    }
+                    
+                    data.galleries.forEach(gallery => {
+                        const galleryItem = document.createElement('div');
+                        galleryItem.className = 'gallery-item';
+                        
+                        const formattedDate = new Date(gallery.createdAt).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        });
+                        
+                        galleryItem.innerHTML = `
+                            <div class="gallery-header">
+                                <div>
+                                    <h3 class="gallery-title">Gallery ${gallery.id.slice(-4)}</h3>
+                                    <div class="gallery-meta">
+                                        Created on ${formattedDate} • ${gallery.artworkCount} artwork${gallery.artworkCount !== 1 ? 's' : ''}
+                                    </div>
+                                </div>
+                                <div class="gallery-actions">
+                                    <button onclick="setCurrentGallery('${gallery.id}')" class="gallery-btn select-btn">
+                                        Select
+                                    </button>
+                                    <button onclick="deleteGallery('${gallery.id}')" class="gallery-btn delete-btn">
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="gallery-artworks">
+                                ${gallery.artworks.length > 0 ? 
+                                    gallery.artworks.map(artwork => `
+                                        <div class="artwork-item">
+                                            <img src="https://www.artic.edu/iiif/2/${artwork.image_id}/full/400,/0/default.jpg" 
+                                                 alt="${artwork.title}">
+                                            <div class="artwork-info">
+                                                ${artwork.title}<br>
+                                                ${artwork.artist_title}
+                                            </div>
+                                        </div>
+                                    `).join('') :
+                                    '<div class="empty-gallery">No artworks in this gallery yet</div>'
+                                }
+                            </div>
+                        `;
+                        galleriesList.appendChild(galleryItem);
+                    });
+                    
+                    document.getElementById('galleries-modal').style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error fetching galleries:', error);
+                alert('Failed to fetch galleries');
+            }
+        }
+
+        async function deleteGallery(galleryId) {
+            if (!confirm('Are you sure you want to delete this gallery? This action cannot be undone.')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/galleries/${galleryId}`, {
+                    method: 'DELETE'
+                });
+                
+                const data = await response.json();
+                if (data.status === 'success') {
+                    if (currentGalleryId === galleryId) {
+                        currentGalleryId = null;
+                    }
+                    alert('Gallery deleted successfully');
+                    viewGalleries();
+                } else {
+                    alert(data.details || 'Failed to delete gallery');
+                }
+            } catch (error) {
+                console.error('Error deleting gallery:', error);
+                alert('Failed to delete gallery');
+            }
+        }
+
+        // Add a function to set the current gallery
+        function setCurrentGallery(galleryId) {
+            currentGalleryId = galleryId;
+            alert('Gallery selected! You can now save artworks to this gallery.');
+            document.getElementById('galleries-modal').style.display = 'none';
+        }
+
+        // Update the save button handler to show which gallery is selected
+        function updateSaveButtonHandler(btn, artwork) {
+            btn.addEventListener('click', async () => {
+                if (!currentGalleryId) {
+                    alert('Please create a gallery first or select an existing gallery from the View Galleries menu');
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`/api/galleries/${currentGalleryId}/artworks`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(artwork)
+                    });
+                    
+                    const data = await response.json();
+                    if (data.status === 'success') {
+                        alert('Artwork saved to gallery!');
+                    } else {
+                        alert(data.details || 'Failed to save artwork');
+                    }
+                } catch (error) {
+                    console.error('Error saving artwork:', error);
+                    alert('Failed to save artwork');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
