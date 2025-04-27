@@ -130,12 +130,17 @@ app.post('/auth/google/callback', async (req, res) => {
         let user = await Schemas.User.findOne({ googleId: userid });
         
         if (!user) {
+            // Ensure username is generated correctly
+            const username = payload.given_name && payload.family_name 
+                ? `${payload.given_name}_${payload.family_name}`
+                : payload.email.split('@')[0];  // Use email as fallback
+            
             // Create new user if doesn't exist
             user = await Schemas.User.create({
                 googleId: userid,
-                name: payload.name || payload.given_name + ' ' + payload.family_name,
+                name: payload.name || `${payload.given_name} ${payload.family_name}`,
                 email: payload.email,
-                username: payload.email.split('@')[0],  // Set username based on the email (or another unique field)
+                username: username,
                 galleries: [],
                 premium: false
             });
@@ -167,6 +172,7 @@ app.post('/auth/google/callback', async (req, res) => {
         });
     }
 });
+
 
 
 // Logout route
