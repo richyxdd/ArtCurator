@@ -568,11 +568,12 @@ nav{ display: flex; justify-content: space-between; align-items: center; padding
                         });
                         
                         galleryItem.innerHTML = `
-                            <a href="galleryview.html?id=${gallery.id}" style="text-decoration: none; color: inherit;">
 
                             <div class="gallery-header">
                                 <div>
-                                    <h3 class="gallery-title">Gallery ${gallery.number}</h3>
+                                    <h3 class="gallery-title"><a href="galleryview.html?id=${gallery.id}" style="text-decoration: none; color: inherit;">
+                    Gallery ${gallery.number}
+                </a></h3>
                                     <div class="gallery-meta">
                                         Created on ${formattedDate} • ${gallery.artworkCount} artwork${gallery.artworkCount !== 1 ? 's' : ''}
                                     </div>
@@ -590,8 +591,11 @@ nav{ display: flex; justify-content: space-between; align-items: center; padding
                                 ${gallery.artworks.length > 0 ? 
                                     gallery.artworks.map(artwork => `
                                         <div class="artwork-item">
+                                            <a href="galleryview.html?id=${gallery.id}">
                                             <img src="https://www.artic.edu/iiif/2/${artwork.image_id}/full/400,/0/default.jpg" 
                                                  alt="${artwork.title}">
+                                                                     </a>
+
                                             <div class="artwork-info">
                                                 ${artwork.title}<br>
                                                 ${artwork.artist_title}
@@ -601,7 +605,7 @@ nav{ display: flex; justify-content: space-between; align-items: center; padding
                                     '<div class="empty-gallery">No artworks in this gallery yet</div>'
                                 }
                             </div>
-                            </a>
+                    
                         `;
                         galleriesList.appendChild(galleryItem);
                     });
