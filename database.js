@@ -133,8 +133,9 @@ app.post('/auth/google/callback', async (req, res) => {
             // Create new user if doesn't exist
             user = await Schemas.User.create({
                 googleId: userid,
-                name: payload.name || `${payload.given_name} ${payload.family_name}`,
+                name: payload.name || payload.given_name + ' ' + payload.family_name,
                 email: payload.email,
+                username: payload.email.split('@')[0],  // Set username based on the email (or another unique field)
                 galleries: [],
                 premium: false
             });
@@ -166,6 +167,7 @@ app.post('/auth/google/callback', async (req, res) => {
         });
     }
 });
+
 
 // Logout route
 app.get('/logout', (req, res) => {
