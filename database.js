@@ -126,15 +126,17 @@ app.post('/auth/google/callback', async (req, res) => {
         console.log('Google payload:', payload);
         const userid = payload['sub'];
 
-        // Check if user exists in database
-        let user = await Schemas.User.findOne({ googleId: userid });
+        // Check if user exists in the database (either by googleId or email)
+        let user = await Schemas.User.findOne({
+            $or: [{ googleId: userid }, { email: payload.email }]
+        });
         
         if (!user) {
             // Ensure username is generated correctly
             const username = payload.given_name && payload.family_name 
                 ? `${payload.given_name}_${payload.family_name}`
                 : payload.email.split('@')[0];  // Use email as fallback
-            
+
             // Create new user if doesn't exist
             user = await Schemas.User.create({
                 googleId: userid,
@@ -172,6 +174,7 @@ app.post('/auth/google/callback', async (req, res) => {
         });
     }
 });
+
 
 
 
