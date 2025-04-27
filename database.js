@@ -266,8 +266,7 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'homepage.html'));
 });
 
-// parse incoming json requests
-app.use(express.json());
+
 
 /****************************/
 /*   for testing purposes   */
