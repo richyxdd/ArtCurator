@@ -414,11 +414,13 @@ app.delete('/api/galleries/:galleryId', isAuthenticated, async (req, res) => {
     }
 });
 
-// Add artwork to a gallery
+// Add or delete artwork to/from a gallery
 app.post('/api/galleries/:galleryId/artworks', isAuthenticated, async (req, res) => {
     try {
         const { galleryId } = req.params;
-        const artwork = req.body;
+        const body = req.body;
+        const artwork = body.artwork;
+        const isDelete = body.isDelete;
         const user = req.user;
 
         // Verify gallery belongs to user
@@ -431,39 +433,60 @@ app.post('/api/galleries/:galleryId/artworks', isAuthenticated, async (req, res)
 
         const gallery = await Schemas.Gallery.findById(galleryId);
         
-        // Check if gallery is full
-        if (gallery.artworks.length >= MAX_GALLERY_SIZE) {
-            return res.status(400).json({
-                error: 'Gallery full',
-                details: `You can only add up to ${MAX_GALLERY_SIZE} artworks per gallery`
+        // if adding artwork to gallery
+        if (!isDelete) {
+            // Check if gallery is full
+            if (gallery.artworks.length >= MAX_GALLERY_SIZE) {
+                return res.status(400).json({
+                    error: 'Gallery full',
+                    details: `You can only add up to ${MAX_GALLERY_SIZE} artworks per gallery`
+                });
+            }
+    
+            // Check if artwork already exists in gallery
+            const artworkExists = gallery.artworks.some(art => art.image_id === artwork.image_id);
+            if (artworkExists) {
+                return res.status(400).json({
+                    error: 'Duplicate artwork',
+                    details: 'This artwork is already in your gallery'
+                });
+            }
+    
+            // Add artwork to gallery
+            gallery.artworks.push(artwork);
+            await gallery.save();
+    
+            res.json({
+                status: 'success-added',
+                message: 'Artwork added to gallery',
+                gallery: gallery
             });
         }
+        else {      // if deleting from gallery
+            try {
+                await Schemas.Gallery.deleteOne({ image_id: artwork.image_id});
+                res.json({
+                    status: 'success-removed',
+                    message: 'Artwork removed from gallery',
+                    gallery: gallery
+                })
+            }
+            catch (error) {
+                console.error('Error removing artwork from gallery: ', error);
+                res.status(500).json({
+                    error: 'Failed to remove artwork',
+                    details: error.message
+                });
+            }
 
-        // Check if artwork already exists in gallery
-        const artworkExists = gallery.artworks.some(art => art.image_id === artwork.image_id);
-        if (artworkExists) {
-            return res.status(400).json({
-                error: 'Duplicate artwork',
-                details: 'This artwork is already in your gallery'
+        }
+        } catch (error) {
+            console.error('Error adding artwork to gallery:', error);
+            res.status(500).json({
+                error: 'Failed to add artwork',
+                details: error.message
             });
         }
-
-        // Add artwork to gallery
-        gallery.artworks.push(artwork);
-        await gallery.save();
-
-        res.json({
-            status: 'success',
-            message: 'Artwork added to gallery',
-            gallery: gallery
-        });
-    } catch (error) {
-        console.error('Error adding artwork to gallery:', error);
-        res.status(500).json({
-            error: 'Failed to add artwork',
-            details: error.message
-        });
-    }
 });
 
 // Get artworks in a gallery

@@ -74,8 +74,20 @@ nav{ display: flex; justify-content: space-between; align-items: center; padding
         header {background-color: white; margin-bottom: 40px;;
 }
   
-.save-btn {
+.save-btn-saved {
             position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: rgba(0,0,0,0.1);
+            color: rgb(203, 159, 0);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+.save-btn-notsaved {
+    position: absolute;
             top: 15px;
             right: 15px;
             background-color: rgba(0,0,0,0.1);
@@ -85,9 +97,10 @@ nav{ display: flex; justify-content: space-between; align-items: center; padding
             border-radius: 20px;
             font-size: 14px;
             transition: all 0.3s ease;
-        }
-        
-        .save-btn:hover {background-color: rgba(0,0,0,0.3);}
+}
+
+        .save-btn-saved:hover {background-color: rgba(0,0,0,0.3);}
+        .save-btn-notsaved:hover {background-color: rgba(0,0,0,0.3);}
 
         .auth-container {
             display: flex;
@@ -344,7 +357,7 @@ nav{ display: flex; justify-content: space-between; align-items: center; padding
                 art_each = document.createElement("div");
                 art_each.innerHTML = `
                     <img src="${`https://www.artic.edu/iiif/2/${artwork.image_id}/full/400,/0/default.jpg`}">
-                        <button class="save-btn" id="save-btn-${i}"><i class="fas fa-bookmark"></i></button>
+                        <button class="save-btn-notsaved" id="save-btn-${i}"><i class="fas fa-bookmark"></i></button>
                          <!-- ADD DATABASE CONNECTION HERE WHEN SAVE IS CLICKED -->
                         <h3 style="margin-bottom:5px; margin-top: 10px">${artwork.title}</h3>
                         <p"margin-bottom:0px; ">${artwork.artist_title}, ${artwork.date_display}</p>
@@ -642,10 +655,13 @@ nav{ display: flex; justify-content: space-between; align-items: center; padding
         }
 
         // Update the save button handler to show which gallery is selected
-        function updateSaveButtonHandler(btn, artwork) {
+        function updateSaveButtonHandler(btn, selectedArtwork) {
             btn.addEventListener('click', async () => {
+                // check if adding or deleting (based on saved/not-saved)
+                let deleteArt = (button.className === 'save-btn-saved');
+                
                 if (!currentGalleryId) {
-                    alert('Please create a gallery first or select an existing gallery from the View Galleries menu');
+                    await alert('Please create a gallery first or select an existing gallery from the View Galleries menu');
                     return;
                 }
 
@@ -655,18 +671,22 @@ nav{ display: flex; justify-content: space-between; align-items: center; padding
                         headers: {
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify(artwork)
+                        body: JSON.stringify({ artwork: selectedArtwork, isDelete: deleteArt })
                     });
                     
                     const data = await response.json();
-                    if (data.status === 'success') {
-                        alert(`Artwork saved to Gallery ${data.gallery.number}!`);
+                    if (data.status === 'success-added') {
+                        btn.className = 'save-btn-saved';
+                        await alert(`Artwork saved to Gallery ${data.gallery.number}!`);
+                    } else if (data.status === 'success-deleted') {
+                        btn.className = 'save-btn-notsaved';
+                        await alert(`Artwork removed from Gallery ${data.gallery.number}!`);
                     } else {
-                        alert(data.details || 'Failed to save artwork');
+                        await alert(data.details || 'Failed to save/delete artwork');
                     }
                 } catch (error) {
                     console.error('Error saving artwork:', error);
-                    alert('Failed to save artwork');
+                    await alert('Failed to save artwork');
                 }
             });
         }
