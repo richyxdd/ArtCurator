@@ -314,7 +314,8 @@ app.post('/api/galleries', isAuthenticated, async (req, res) => {
 
         // Determine the new gallery index by finding the last gallery created
         let galleryNumber = 1;
-        let lastGallery = await Schemas.Gallery.findOne().sort({ timestamp: -1 }).limit(1);
+        let lastGallery = await Schemas.Gallery.findOne({ user_id: user.id }).sort({ createdAt: -1 });
+        console.log(lastGallery);
         if (lastGallery != null) {
             galleryNumber = lastGallery.number + 1;
         }
