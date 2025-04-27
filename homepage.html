@@ -568,6 +568,8 @@ nav{ display: flex; justify-content: space-between; align-items: center; padding
                         });
                         
                         galleryItem.innerHTML = `
+                            <a href="galleryview.html?id=${gallery.id}" style="text-decoration: none; color: inherit;">
+
                             <div class="gallery-header">
                                 <div>
                                     <h3 class="gallery-title">Gallery ${gallery.number}</h3>
@@ -599,6 +601,7 @@ nav{ display: flex; justify-content: space-between; align-items: center; padding
                                     '<div class="empty-gallery">No artworks in this gallery yet</div>'
                                 }
                             </div>
+                            </a>
                         `;
                         galleriesList.appendChild(galleryItem);
                     });

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin">
+    <meta http-equiv="Cross-Origin-Embedder-Policy" content="require-corp">
+    <title>Gallery View - ArtCurator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vidaloka&display=swap" rel="stylesheet"> <!--for font-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <style>
+        body {background-color: #faf3f3; font-family: 'Vidaloka', serif;}
+        h1 {color: #5d071e; font-family: 'Vidaloka', serif;  margin-bottom: 0;}
+        h2 {margin-top: 0}
+        
+        #gallery-artwork {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            padding: 100px;
+        }
+
+        #gallery-artwork div {
+            background-color: #fff7f7;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+            text-align: left;
+            position: relative; 
+            padding-bottom: 0px;
+        }
+
+        #gallery-artwork img { 
+            width: 100%; 
+            height: auto; 
+            border-radius: 6px;
+        }
+        
+        nav{ display: flex; justify-content: space-between; align-items: center; padding: 0px;}
+        .nav-btn {
+            padding: 8px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        .galleries-nav {
+            background-color: #e8e8e8;
+            color: #333;
+        }
+        header {
+            background-color: white; 
+            margin-bottom: 40px;
+        }
+        
+        .auth-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .user-avatar {
+            display: none;
+        }
+
+        .logout-btn {
+            padding: 8px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            background-color: #5d071e;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            background-color: #7a0a26;
+        }
+        
+        .empty-gallery {
+            text-align: center;
+            padding: 50px;
+            background-color: #fff7f7;
+            border-radius: 10px;
+            margin: 20px auto;
+            max-width: 600px;
+            grid-column: 1 / -1;
+        }
+        
+        .gallery-link {
+            color: #5d071e;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .gallery-link:hover {
+            color: #7a0a26;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>     
+            <h1 style="font-size:45px; margin-left: 40px;"> ArtCurator</h1>     
+            <div class="auth-container">
+                <div id="user-info" class="user-info" style="display: none;">
+                    <span id="user-name"></span>
+                    <button id="create-gallery-btn" class="nav-btn galleries-nav">Create Gallery</button>
+                    <a href="#" class="nav-btn galleries-nav" id="view-galleries-btn">View Galleries</a>
+                    <a href="/logout" class="logout-btn">Logout</a>
+                </div>
+                <div id="g_id_signin" class="g_id_signin"></div>
+                <a href="/" class="nav-btn galleries-nav">Home</a>
+            </div>
+        </nav>
+        <h2 id="gallery-title" style="font-size: 30px; margin-left: 40px;">Gallery View</h2>
+    </header>
+
+    <div id="gallery-artwork"> </div> 
+    
+    <div id="about">
+
+
+
+
+    </div> 
+    <script>
+         let page = 1;
+        let isLoading = false; 
+
+ // 
+    function handleSearch(event) {
+        event.preventDefault();
+            const query = document.getElementById('searchInput').value.trim();
+            
+            if (query) {
+                page = 1;
+                document.getElementById("gallery-artwork").innerHTML = ''; // Clear existing results
+                fetchArtwork(query);
+            } else { alert('Please enter a term to search for.');}
+        }
+        // get API
+        function fetchArtwork(query) {
+            if (isLoading) return; // Prevent fetching if already in progress
+            isLoading = true;
+            
+            fetch(`https://api.artic.edu/api/v1/artworks/search?q=${query}&fields=title,image_id,artist_title,artist_display,classification_titles,description,date_display&&page=${page}&limit=9`)
+                .then(res => {return res.text();})
+                .then(data => {
+                    data = JSON.parse(data)
+                    displayArtworks(data.data);
+                    isLoading = false;
+                    page++; // Increment page for the next request
+
+                })
+                .catch(error => console.log(error)); isLoading = false;
+        }
+
+
+
+        // Display the artwork in the page
+        function displayArtworks(artworks) {
+            const container = document.getElementById("gallery-artwork");
+            //   container.innerHTML = ''
+            
+            artworks.forEach(artwork => {
+                
+                art_each = document.createElement("div");
+                art_each.innerHTML = `
+                    <img src="${`https://www.artic.edu/iiif/2/${artwork.image_id}/full/400,/0/default.jpg`}">
+                        <button class="save-btn"><i class="fas fa-bookmark"></i></button>
+                         <!-- ADD DATABASE CONNECTION HERE WHEN SAVE IS CLICKED -->
+                        <h3 style="margin-bottom:5px; margin-top: 10px">${artwork.title}</h3>
+                        <p"margin-bottom:0px; ">${artwork.artist_title}, ${artwork.date_display}</p>
+                        <!-- EXTRA ART DATA IS HERE (but not displayed on screen. Put in database?) -->
+                        <!-- <p>${artwork.artist_display}</p> -->
+                        <!-- <p>${artwork.classification_titles}</p>-->
+
+
+                `;
+                container.appendChild(art_each);
+                
+            });
+        }
+
+    
+            function checkScrollPosition() {
+            const scrollPosition = window.innerHeight + window.scrollY;
+            const bottomPosition = document.documentElement.scrollHeight;
+            
+            if (scrollPosition >= bottomPosition - 100) { 
+                // fetch again
+                const query = document.getElementById('searchInput').value.trim();
+                if (query) {
+                    fetchArtwork(query); 
+                }
+            }
+        }
+        window.addEventListener('scroll', checkScrollPosition);
+
+        window.onload = fetchArtwork("France");
+    </script>
+</body>
+</html>

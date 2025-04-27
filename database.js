@@ -177,7 +177,10 @@ const isAuthenticated = (req, res, next) => {
     }
     res.redirect('/');
 };
-
+// for separate gallery page
+app.get('/galleryview.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'galleryview.html'));
+});
 
 // Constants for gallery limits
 const MAX_GALLERY_NUM = 5;
