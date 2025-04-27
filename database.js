@@ -60,7 +60,7 @@ passport.use(new GoogleStrategy({
 function(accessToken, refreshToken, profile, email , cb) {
     console.log(profile);
     User.findOrCreate({ username: profile.displayName, googleId: profile.id }, function (err, user) {
-    return cb(err, user);
+        return cb(err, user);
     });
     }
     ));
@@ -331,24 +331,37 @@ app.post('/api/galleries', isAuthenticated, async (req, res) => {
             });
         }
 
+        // Determine the new gallery index by finding the last gallery created
+        let galleryNumber = 1;
+        let lastGallery = await Schemas.Gallery.findOne().sort({ timestamp: -1 }).limit(1);
+        if (lastGallery != null) {
+            galleryNumber = lastGallery.number + 1;
+        }
+        console.log(`New Gallery Number: `)
+        // assign a new ObjectId to the new gallery
+        let galleryId = new mongoose.Types.ObjectId();
+
         // Create new gallery
         const newGallery = new Schemas.Gallery({
+            _id: galleryId,
             user_id: user._id,
-            artworks: []
+            artworks: [],
+            number: galleryNumber
         });
 
         // Save the gallery first
         await newGallery.save();
 
         // Add gallery to user's galleries array
-        user.galleries.push(newGallery._id);
+        user.galleries.push(galleryId);
         await user.save();
 
         res.json({
             status: 'success',
             gallery: {
-                id: newGallery._id,
-                artworks: []
+                id: galleryId,
+                artworks: [],
+                number: galleryNumber
             }
         });
     } catch (error) {
@@ -373,7 +386,8 @@ app.get('/api/galleries', isAuthenticated, async (req, res) => {
                 id: gallery._id,
                 artworkCount: gallery.artworks.length,
                 createdAt: gallery.createdAt,
-                artworks: gallery.artworks
+                artworks: gallery.artworks,
+                number: gallery.number
             }))
         });
     } catch (error) {

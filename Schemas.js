@@ -47,6 +47,10 @@ const GallerySchema = new mongoose.Schema(
         artworks: {
             type: [ArtworkSchema],
             default: []
+        },
+        number: {
+            type: Number,
+            required: true,
         }
     },
     { timestamps: true }
@@ -56,7 +60,7 @@ const UserSchema = new mongoose.Schema(
     {
         name: {
             type: String,
-            unique: true,
+            unique: false,
             required: true
         },
         password: {

@@ -518,7 +518,7 @@ nav{ display: flex; justify-content: space-between; align-items: center; padding
                 const data = await response.json();
                 if (data.status === 'success') {
                     currentGalleryId = data.gallery.id; // Set the current gallery ID
-                    alert('Gallery created successfully! You can now save artworks to this gallery.');
+                    alert(`Gallery ${data.gallery.number} created successfully! You can now save artworks to this gallery.`);
                     viewGalleries();
                 } else {
                     alert(data.details || 'Failed to create gallery');
@@ -538,9 +538,11 @@ nav{ display: flex; justify-content: space-between; align-items: center; padding
                     const galleriesList = document.getElementById('galleries-list');
                     galleriesList.innerHTML = '';
                     
-                    // Set currentGalleryId to the first gallery if none is set
+                    // Set currentGalleryId to the first non-full gallery if none is set
                     if (!currentGalleryId && data.galleries.length > 0) {
-                        currentGalleryId = data.galleries[0].id;
+                        let i=0;
+                        while (data.galleries[i].length === 10) { i++; }
+                        currentGalleryId = data.galleries[i].id;
                     }
                     
                     if (data.galleries.length === 0) {
@@ -565,7 +567,7 @@ nav{ display: flex; justify-content: space-between; align-items: center; padding
                         galleryItem.innerHTML = `
                             <div class="gallery-header">
                                 <div>
-                                    <h3 class="gallery-title">Gallery ${gallery.id.slice(-4)}</h3>
+                                    <h3 class="gallery-title">Gallery ${gallery.number}</h3>
                                     <div class="gallery-meta">
                                         Created on ${formattedDate} • ${gallery.artworkCount} artwork${gallery.artworkCount !== 1 ? 's' : ''}
                                     </div>
@@ -658,7 +660,7 @@ nav{ display: flex; justify-content: space-between; align-items: center; padding
                     
                     const data = await response.json();
                     if (data.status === 'success') {
-                        alert('Artwork saved to gallery!');
+                        alert(`Artwork saved to Gallery ${data.gallery.number}!`);
                     } else {
                         alert(data.details || 'Failed to save artwork');
                     }
