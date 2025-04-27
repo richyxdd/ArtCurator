@@ -57,28 +57,13 @@ passport.use(new GoogleStrategy({
     clientSecret: GOOGLE_CLIENT_SECRET,
     callbackURL: "http://localhost:3000/auth/google/callback"
 },
-async (accessToken, refreshToken, profile, done) => {
-    try {
-        // Check if user exists in database
-        let user = await Schemas.User.findOne({ googleId: profile.id });
-        
-        if (!user) {
-            // Create new user if doesn't exist
-            user = await Schemas.User.create({
-                googleId: profile.id,
-                name: profile.displayName,
-                email: profile.emails[0].value,
-                picture: profile.photos[0].value,
-                galleries: [],
-                premium: false
-            });
-        }
-        
-        return done(null, user);
-    } catch (err) {
-        return done(err, null);
+function(accessToken, refreshToken, profile, email , cb) {
+    console.log(profile);
+    User.findOrCreate({ username: profile.displayName, googleId: profile.id }, function (err, user) {
+    return cb(err, user);
+    });
     }
-}));
+    ));
 
 // Serialize and deserialize user
 passport.serializeUser((user, done) => {
