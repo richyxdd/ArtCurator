@@ -133,7 +133,7 @@ app.post('/auth/google/callback', async (req, res) => {
             // Create new user if doesn't exist
             user = await Schemas.User.create({
                 googleId: userid,
-                name: payload.name || payload.given_name + ' ' + payload.family_name,
+                name: payload.name || `${payload.given_name} ${payload.family_name}`,
                 email: payload.email,
                 galleries: [],
                 premium: false
@@ -181,6 +181,7 @@ const isAuthenticated = (req, res, next) => {
     }
     res.redirect('/');
 };
+
 
 // Constants for gallery limits
 const MAX_GALLERY_NUM = 5;
