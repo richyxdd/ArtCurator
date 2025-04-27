@@ -36,7 +36,7 @@ const GOOGLE_CLIENT_SECRET = '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';
 
 // Configure session
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'your-secret-key',
+    secret: 'your-secret-key',
     resave: false,
     saveUninitialized: false,
     cookie: {
