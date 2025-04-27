@@ -267,24 +267,6 @@ app.get('/', (req, res) => {
 });
 
 
-
-/****************************/
-/*   for testing purposes   */
-const user = "alee22";
-const pw = "temp-password";
-
-let Galleries = [];
-
-for (let i=0; i<MAX_GALLERY_NUM; i++) {
-    Galleries[i] = new mongoose.Types.ObjectId();
-}
-
-let current_user = new Schemas.User({ username:user, password:pw, galleries:Galleries, premium:false });
-
-let selectedGalleryNum = 0;
-const selectedGallery = Galleries[selectedGalleryNum];
-/****************************/
-
 // User information endpoint
 app.get('/api/user', (req, res) => {
     if (req.isAuthenticated()) {
