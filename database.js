@@ -6,7 +6,6 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const session = require('express-session');
 const { OAuth2Client } = require('google-auth-library');
-require('dotenv').config();
 
 const PORT = process.env.PORT || 3000;
 const Schemas = require('./Schemas.js');
