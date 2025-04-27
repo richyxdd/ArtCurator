@@ -5,13 +5,13 @@
     <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin">
     <meta http-equiv="Cross-Origin-Embedder-Policy" content="require-corp">
     <title>Homepage </title>
-    <link href="https://fonts.googleapis.com/css2?family=Vidaloka&display=swap" rel="stylesheet"> <!--for font-->
+    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet"> <!--for font-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 
     <style>
-        body {background-color: #faf3f3; font-family: 'Vidaloka', serif;}
-        h1 {color: #5d071e; font-family: 'Vidaloka', serif;  margin-bottom: 0;}
+        body {background-color: #faf3f3; font-family: 'Lato', serif;}
+        h1 {color: #5d071e; font-family: 'Lato', serif;  margin-bottom: 0;}
         h2 {margin-top: 0}
     #artwork {
         display: grid;
@@ -267,8 +267,9 @@ nav{ display: flex; justify-content: space-between; align-items: center; padding
 <body>
     <header>
         <nav>     
-            <h1 style="font-size:45px; margin-left: 40px;"> ArtCurator</h1>     
-            <div class="auth-container">
+            <h1 style="font-size:45px; margin-left: 40px;">
+                <span style=" color: black">Art</span>Curator
+              </h1>            <div class="auth-container">
                 <div id="user-info" class="user-info" style="display: none;">
                     <span id="user-name"></span>
                     <a href="#" class="nav-btn galleries-nav" id="view-galleries-btn">View Galleries</a>
@@ -278,6 +279,7 @@ nav{ display: flex; justify-content: space-between; align-items: center; padding
             </div>
         </nav>
         <h2 style="font-size: 15px; margin-left: 40px;"> Create Your Personal Gallery</h2>
+        <br> <br> 
     </header>
 
     <form id="search-form" class="search-container" onsubmit="handleSearch(event)">
