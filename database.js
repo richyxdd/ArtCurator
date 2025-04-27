@@ -319,7 +319,6 @@ app.post('/api/galleries', isAuthenticated, async (req, res) => {
         if (lastGallery != null) {
             galleryNumber = lastGallery.number + 1;
         }
-        console.log(`New Gallery Number: `)
         // assign a new ObjectId to the new gallery
         let galleryId = new mongoose.Types.ObjectId();
 

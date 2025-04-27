@@ -271,7 +271,6 @@ nav{ display: flex; justify-content: space-between; align-items: center; padding
             <div class="auth-container">
                 <div id="user-info" class="user-info" style="display: none;">
                     <span id="user-name"></span>
-                    <button id="create-gallery-btn" class="nav-btn galleries-nav">Create Gallery</button>
                     <a href="#" class="nav-btn galleries-nav" id="view-galleries-btn">View Galleries</a>
                     <a href="/logout" class="logout-btn">Logout</a>
                 </div>
@@ -302,15 +301,18 @@ nav{ display: flex; justify-content: space-between; align-items: center; padding
         <div class="modal-content">
             <span class="close">&times;</span>
             <h2>Your Galleries</h2>
+            <button id="create-gallery-btn" class="nav-btn galleries-nav">Create Gallery</button>
             <div id="galleries-list"></div>
         </div>
     </div>
 
     <script>
-         let page = 1;
+        let page = 1;
         let isLoading = false; 
         let currentGalleryId = null;
-
+        window.addEventListener('scroll', checkScrollPosition);
+        window.onload = fetchArtwork("France");
+        
     function handleSearch(event) {
         event.preventDefault();
             const query = document.getElementById('searchInput').value.trim();
@@ -364,7 +366,7 @@ nav{ display: flex; justify-content: space-between; align-items: center; padding
                 i++;
             });
         }
-            function checkScrollPosition() {
+        function checkScrollPosition() {
             const scrollPosition = window.innerHeight + window.scrollY;
             const bottomPosition = document.documentElement.scrollHeight;
             
@@ -377,8 +379,6 @@ nav{ display: flex; justify-content: space-between; align-items: center; padding
             }
         }
 
-        window.addEventListener('scroll', checkScrollPosition);
-        window.onload = fetchArtwork("France");
         
         // Initialize Google Sign-In when the script loads
         function initializeGoogleSignIn() {
@@ -533,6 +533,7 @@ nav{ display: flex; justify-content: space-between; align-items: center; padding
 
         async function viewGalleries() {
             try {
+                document.getElementById('galleries-modal').style.display = 'block';
                 const response = await fetch('/api/galleries');
                 const data = await response.json();
                 
@@ -601,8 +602,6 @@ nav{ display: flex; justify-content: space-between; align-items: center; padding
                         `;
                         galleriesList.appendChild(galleryItem);
                     });
-                    
-                    document.getElementById('galleries-modal').style.display = 'block';
                 }
             } catch (error) {
                 console.error('Error fetching galleries:', error);
