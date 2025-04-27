@@ -32,8 +32,8 @@ mongoose.connect(url)
 app.use(express.json());
 
 // Google OAuth configuration
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
-const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+const GOOGLE_CLIENT_ID = '16218638873-e13qud162q6q342aqg8f0pu7pmgeu2bb.apps.googleusercontent.com';
+const GOOGLE_CLIENT_SECRET = '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';
 
 // Configure session
 app.use(session({
