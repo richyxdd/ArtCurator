@@ -80,6 +80,11 @@ async function viewGalleries() {
                             </div>
                         </div>
                         <div class="gallery-actions">
+                            <a href="galleryview.html?id=${gallery.id}&num=${gallery.number}">
+                                <button class="gallery-btn view-btn">
+                                    View
+                                </button>
+                            </a>
                             <button onclick="setCurrentGallery('${gallery.id}')" class="gallery-btn select-btn">
                                 Select
                             </button>
