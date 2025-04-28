@@ -19,9 +19,9 @@ async function createGallery() {
         
         const data = await response.json();
         if (data.status === 'success') {
-            await setCurrentGallery(data.gallery.id);
+            localStorage.setItem('selectedGalleryId', data.gallery.id);
             alert(`Gallery ${data.gallery.number} created successfully! You can now save artworks to this gallery.`);
-            viewGalleries();
+            await viewGalleries();
         } else {
             alert(data.details || 'Failed to create gallery');
         }
