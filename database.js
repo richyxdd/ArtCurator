@@ -68,7 +68,7 @@ function(accessToken, refreshToken, profile, email , cb) {
 // Serialize and deserialize user
 passport.serializeUser((user, done) => {
     done(null, user.id);
-});
+}); 
 
 passport.deserializeUser(async (id, done) => {
     try {
