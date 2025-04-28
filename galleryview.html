@@ -327,7 +327,6 @@
         const url = new URL(window.location.href);
         const galleryId = url.searchParams.get('id');
         const galleryNum = url.searchParams.get('num');
-
         fetchGallery(galleryId);
 
         document.getElementById("gallery-info").innerHTML = `<div class="item"><h2>Gallery ${galleryNum}</h2></div><div class="item"><a href="#" class="nav-btn galleries-nav" id="view-galleries-btn">Select Gallery</a></div>`;
@@ -399,12 +398,13 @@
     function displayArtworks_galleryView(artworks) {
         const container = document.getElementById("gallery-artwork");
         //container.innerHTML = '';
+        let i = 0;
         artworks.forEach(artwork => {
             
             art_each = document.createElement("div");
             art_each.innerHTML = `
                 <img src="${`https://www.artic.edu/iiif/2/${artwork.image_id}/full/400,/0/default.jpg`}">
-                    <button class="remove-button">Remove Artwork</button>
+                    <button class="remove-button" id="rmv-btn-${i}">Remove Artwork</button>
                     <!-- ADD DATABASE CONNECTION HERE WHEN SAVE IS CLICKED -->
                     <h3 style="margin-bottom:5px; margin-top: 10px">${artwork.title}</h3>
                     <p"margin-bottom:0px; ">${artwork.artist_title}, ${artwork.date_display}</p>
@@ -413,6 +413,28 @@
                     <!-- <p>${artwork.classification_titles}</p>-->
             `;
             container.appendChild(art_each);
+
+            const btn = document.getElementById(`rmv-btn-${i}`);
+            updateRemoveButtonHandler(btn, artwork);
+            i++;
+        });
+    }
+
+    function updateRemoveButtonHandler(btn, artwork) {
+        
+        btn.addEventListener('click', async () => {
+            if (!confirm('Are you sure you want to delete this artwork? This action cannot be undone.')) {
+                return;
+            }
+            const response = await fetch(`/api/galleries/${galleryId}/artworks/${artwork.image_id}`, {
+                method: 'DELETE'
+            });
+            const data = await response.json();
+            if (data.status === 'success') {
+                alert("Artwork removed!");
+                document.getElementById("gallery-artwork").innerHTML = '';
+                fetchGallery(galleryId);
+            }
         });
     }
 

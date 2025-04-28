@@ -425,6 +425,7 @@ app.get('/api/galleries/:galleryId/artworks', isAuthenticated, async (req, res) 
     }
 });
 
+// Remove artwork from a gallery
 app.delete('/api/galleries/:galleryId/artworks/:imageId', isAuthenticated, async (req, res) => {
     try {
         const { galleryId, imageId } = req.params;
