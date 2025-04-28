@@ -88,7 +88,7 @@ nav{ display: flex; justify-content: space-between; align-items: center; padding
         }
         
         .save-btn:hover {background-color: rgba(0,0,0,0.3);}
-
+        .saved { color:rgb(193, 149, 3)}
         .auth-container {
             display: flex;
             align-items: center;
@@ -386,7 +386,7 @@ nav{ display: flex; justify-content: space-between; align-items: center; padding
                         <!-- <p>${artwork.classification_titles}</p>-->
                 `;
                 container.appendChild(art_each);
-
+                    
 
                 // add an event listener to the button
                 const btn = document.getElementById(`save-btn-${i}`);
@@ -687,23 +687,47 @@ nav{ display: flex; justify-content: space-between; align-items: center; padding
                 }
 
                 try {
-                    const response = await fetch(`/api/galleries/${currentGalleryId}/artworks`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(artwork)
-                    });
-                    
+                    // fetch artworks in current gallery
+                    const response = await fetch(`/api/galleries/${currentGalleryId}/artworks`);
                     const data = await response.json();
                     if (data.status === 'success') {
-                        alert(`Artwork saved to Gallery ${data.gallery.number}!`);
-                    } else {
-                        alert(data.details || 'Failed to save artwork');
+                        const artworks = data.artworks;
+                        const exists = artworks.some(art => art.image_id === artwork.image_id);
+                        // delete artwork if it exists
+                        if (exists) {
+                            const remResponse = await fetch(`/api/galleries/${currentGalleryId}/artworks/${artwork.image_id}`, {
+                                method: 'DELETE'
+                            });
+                            const remData = await remResponse.json();
+                            if (remData.status === 'success') {
+                                btn.innerHTML = `<i class="far fa-bookmark"></i>`;
+                                btn.classList.remove('saved');
+                                alert(`Artwork removed from Gallery`);
+                            } else {
+                                alert(remData.message || 'Failed to remove artwork');
+                            }
+                        } else {    // add it otherwise
+                            const addResponse = await fetch(`/api/galleries/${currentGalleryId}/artworks`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(artwork)
+                            });
+                            const addData = await addResponse.json();
+                            if (addData.status === 'success') {
+                                btn.innerHTML = '<i class="fas fa-bookmark"></i>';
+                                btn.classList.add('saved');                                
+                                alert(`Artwork saved to Gallery ${addData.gallery.number}!`);
+                            } else {
+                                alert(addData.details || 'Failed to save artwork');
+                            }
+                        }
                     }
+
                 } catch (error) {
-                    console.error('Error saving artwork:', error);
-                    alert('Failed to save artwork');
+                    console.error('Error saving/deleting artwork:', error);
+                    alert('Failed to save/delete artwork');
                 }
             });
         }

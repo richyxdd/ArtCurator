@@ -484,6 +484,7 @@ app.get('/api/galleries/:galleryId/artworks', isAuthenticated, async (req, res) 
         }
 
         const gallery = await Schemas.Gallery.findById(galleryId);
+
         res.json({
             status: 'success',
             artworks: gallery.artworks
@@ -494,5 +495,26 @@ app.get('/api/galleries/:galleryId/artworks', isAuthenticated, async (req, res) 
             error: 'Failed to fetch artworks',
             details: error.message
         });
+    }
+});
+
+app.delete('/api/galleries/:galleryId/artworks/:imageId', isAuthenticated, async (req, res) => {
+    try {
+        const { galleryId, imageId } = req.params;
+    
+
+        await Schemas.Gallery.updateOne({ _id: galleryId }, { $pull: { artworks: {image_id: imageId}}});
+
+        res.json({
+            status: 'success',
+            message: 'Artwork removed from gallery',
+        });
+    }
+    catch(error) {
+         console.error('Error removing artwork from gallery: ', error);
+         res.status(500).json({
+            error: 'Failed to delete artwork',
+            details: error.message
+         })
     }
 });
