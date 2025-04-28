@@ -177,96 +177,23 @@ const isAuthenticated = (req, res, next) => {
     }
     res.redirect('/');
 };
-// for separate gallery page
-app.get('/galleryview.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'galleryview.html'));
-});
+
 
 // Constants for gallery limits
 const MAX_GALLERY_NUM = 5;
 const MAX_GALLERY_SIZE = 10;
 
-async function addToGalleries(artwork, current_user, gallery_id) {
-    console.log(`Connecting to MongoDB`);
-    await mongoose.connect(url);
-    const db = mongoose.connection;
-    db.on('error', console.error.bind(console, 'error: '));
-    db.once('open', async function() {
-        try {
-            console.log(`✅ Connection successful with a readyState of: ${db.readyState}`);
-            
-            var currGallery = await addGalleryToDB(current_user, gallery_id);
-
-            // add the art to the gallery
-            if (currGallery != null) {
-                await addArtToGallery(artwork, currGallery);
-            }
-        }
-        catch(err) {
-            console.log(`Error pushing artwork: ${err}`);
-        }
-        await db.close();
-    });
-    /* search for gallery index number */
-    const targetId = gallery_id.toString();
-    const index = current_user.galleries
-                    .map(id => id.toString())
-                    .indexOf(targetId);
-    return index;
-}
-
-async function addGalleryToDB(current_user, gallery_id) {
-    // find current gallery as obj
-    try {
-        let currGallery = await Schemas.Gallery.findOne({ '_id': gallery_id });
-        if (currGallery === null) {
-            console.log(`Gallery not found. Creating Gallery..`)
-            currGallery = await Schemas.Gallery.create({ _id:gallery_id, artworks: [], user_id: current_user });
-        } else {
-            console.log(`Gallery found: ${gallery_id}`);
-        }
-        return currGallery;
-    }
-    catch (err) {
-        console.log(`Error creating gallery: ${err}`);
-    }
-    return null;
-}
-
-async function addArtToGallery(artwork, galleryObj) {
-    // search the gallery for the piece to add
-    try {
-        const exists = await Schemas.Gallery.findOne({ 
-            _id: galleryObj._id,
-            artworks: {
-                $elemMatch: {
-                    title: artwork.title
-                }
-            }
-        });
-        // push to artworks array if not found
-        if (exists === null) {
-            if (galleryObj.artworks.length === MAX_GALLERY_SIZE) {
-                const out = "You have reached the maximum amount of artworks per gallery."
-                console.log(out);
-                alert(out);
-            } else {
-                await Schemas.Gallery.updateOne(
-                    { _id:galleryObj._id }, { $push: { artworks: artwork } }
-                );
-                console.log(`Art added to gallery: ${galleryObj._id}`);
-            }
-        } else {
-            console.log(`The artwork ${artwork.title} already exists in this gallery`);
-        }
-    } catch (err) {
-        console.log(`Error searching for and pushing to gallery: ${err}`);
-    }
-}
+// serve public folder (contains js and css files)
+app.use(express.static(path.join(__dirname, 'public')));
 
 // load homepage and css
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'homepage.html'));
+});
+
+// for separate gallery page
+app.get('/galleryview.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'galleryview.html'));
 });
 
 
@@ -484,6 +411,7 @@ app.get('/api/galleries/:galleryId/artworks', isAuthenticated, async (req, res) 
         }
 
         const gallery = await Schemas.Gallery.findById(galleryId);
+
         res.json({
             status: 'success',
             artworks: gallery.artworks
@@ -494,5 +422,27 @@ app.get('/api/galleries/:galleryId/artworks', isAuthenticated, async (req, res) 
             error: 'Failed to fetch artworks',
             details: error.message
         });
+    }
+});
+
+// Remove artwork from a gallery
+app.delete('/api/galleries/:galleryId/artworks/:imageId', isAuthenticated, async (req, res) => {
+    try {
+        const { galleryId, imageId } = req.params;
+    
+
+        await Schemas.Gallery.updateOne({ _id: galleryId }, { $pull: { artworks: {image_id: imageId}}});
+
+        res.json({
+            status: 'success',
+            message: 'Artwork removed from gallery',
+        });
+    }
+    catch(error) {
+         console.error('Error removing artwork from gallery: ', error);
+         res.status(500).json({
+            error: 'Failed to delete artwork',
+            details: error.message
+         })
     }
 });

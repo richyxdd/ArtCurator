@@ -19,7 +19,17 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 20px;
-            padding: 100px;
+            margin: 20px 100px;
+        }
+        #gallery-info {
+            margin: 20px 100px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-align: center;
+        }
+        .item > h2 {
+            margin: 0px;
         }
 
         #gallery-artwork div {
@@ -96,7 +106,148 @@
             max-width: 600px;
             grid-column: 1 / -1;
         }
-        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            overflow: auto;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            max-height: 600px;
+            border-radius: 10px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: black;
+        }
+
+        .gallery-item {
+            background-color: #fff;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .gallery-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .gallery-title {
+            font-size: 1.2em;
+            color: #5d071e;
+            margin: 0;
+        }
+
+        .gallery-meta {
+            color: #666;
+            font-size: 0.9em;
+            margin: 5px 0;
+        }
+
+        .gallery-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .gallery-btn {
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .select-btn {
+            background-color: #5d071e;
+            color: white;
+        }
+
+        .select-btn:hover {
+            background-color: #7a0a26;
+        }
+
+        .delete-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+
+        .gallery-artworks {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .artwork-item {
+            position: relative;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .artwork-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .artwork-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .artwork-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px 10px;
+            font-size: 0.8em;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .artwork-item:hover .artwork-info {
+            opacity: 1;
+        }
+
+        .empty-gallery {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-style: italic;
+        }
+
         .gallery-link {
             color: #5d071e;
             text-decoration: none;
@@ -108,18 +259,18 @@
             text-decoration: underline;
         }
         #footer {
-    background-color: white;
-    color: black;
-    padding: 30px 20px;
-    text-align: center;
-    font-size: 14px;
-    display: flex;
-    flex-direction: column; }
-#footer a {
-    text-decoration: none;
-    color: #333;
-
-}
+            background-color: white;
+            color: black;
+            padding: 30px 20px;
+            text-align: center;
+            font-size: 14px;
+            display: flex;
+            flex-direction: column; 
+        }
+        #footer a {
+            text-decoration: none;
+            color: #333;
+        }
     </style>
 </head>
 <body>
@@ -127,22 +278,29 @@
         <nav>     
             <h1 style="font-size:45px; margin-left: 40px;">
                 <span style=" color: black">Art</span>Curator
-              </h1>    
-                          <div class="auth-container">
-                <div id="user-info" class="user-info" style="display: none;">
+            </h1>    
+            <div class="auth-container">
+                <div id="user-info" class="user-info">
                     <span id="user-name"></span>
-                    <button id="create-gallery-btn" class="nav-btn galleries-nav">Create Gallery</button>
-                    <a href="#" class="nav-btn galleries-nav" id="view-galleries-btn">View Galleries</a>
+                    <a href="/" class="nav-btn galleries-nav">Home</a>
                     <a href="/logout" class="logout-btn">Logout</a>
                 </div>
                 <div id="g_id_signin" class="g_id_signin"></div>
-                <a href="/" class="nav-btn galleries-nav">Home</a>
             </div>
         </nav>
         <h2 id="gallery-title" style="font-size: 30px; margin-left: 40px;">Gallery View</h2>
     </header>
+    <div id="gallery-info"></div>
 
-    <div id="gallery-artwork"> </div> 
+    <div id="gallery-artwork"></div> 
+
+    <div id="galleries-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Your Galleries</h2>
+            <div id="galleries-list"></div>
+        </div>
+    </div>
     
    <div id="footer">
     <div>
@@ -159,85 +317,217 @@
         <p><a href="#">About</a> | <a href="#">Visit Your Galleries</a></p>
     </div>
 
-
-
-
     </div> 
+    <script src="display.js"></script>
+    <script src="manage_galleries.js"></script>
     <script>
-         let page = 1;
+        let page = 1;
         let isLoading = false; 
+        const url = new URL(window.location.href);
+        const galleryId = url.searchParams.get('id');
+        const galleryNum = url.searchParams.get('num');
+        fetchGallery(galleryId);
 
- // 
-    function handleSearch(event) {
-        event.preventDefault();
-            const query = document.getElementById('searchInput').value.trim();
+        document.getElementById("gallery-info").innerHTML = `<div class="item"><h2>Gallery ${galleryNum}</h2></div><div class="item"><a href="#" class="nav-btn galleries-nav" id="view-galleries-btn">Select Gallery</a></div>`;
+        selectBtnHandler();
+
+        // Call initialization when the Google script is loaded
+        window.onload = function() {
+            fetchArtwork("Van Gogh");
+            if (typeof google !== 'undefined') {
+                initializeGoogleSignIn();
+            } else {
+                console.error('Google Sign-In script not loaded');
+            }
             
-            if (query) {
-                page = 1;
-                document.getElementById("gallery-artwork").innerHTML = ''; // Clear existing results
-                fetchArtwork(query);
-            } else { alert('Please enter a term to search for.');}
-        }
-        // get API
-        function fetchArtwork(query) {
-            if (isLoading) return; // Prevent fetching if already in progress
-            isLoading = true;
-            
-            fetch(`https://api.artic.edu/api/v1/artworks/search?q=${query}&fields=title,image_id,artist_title,artist_display,classification_titles,description,date_display&&page=${page}&limit=9`)
-                .then(res => {return res.text();})
+            // Check if user is already logged in
+            fetch('/api/user')
+                .then(response => response.json())
                 .then(data => {
-                    data = JSON.parse(data)
-                    displayArtworks(data.data);
-                    isLoading = false;
-                    page++; // Increment page for the next request
-
+                    console.log('User data received:', data);
+                    if (data.user) {
+                        console.log('User is logged in:', data.user);
+                        const userInfo = document.getElementById('user-info');
+                        const userName = document.getElementById('user-name');
+                        const signInButton = document.getElementById('g_id_signin');
+                        
+                        if (userInfo && userName && signInButton) {
+                            userInfo.style.display = 'flex';
+                            userName.textContent = data.user.name || 'User';
+                            signInButton.style.display = 'none';
+                            console.log('User info elements updated');
+                        } else {
+                            console.error('Required elements not found');
+                        }
+                    } else {
+                        console.log('No user logged in');
+                        const userInfo = document.getElementById('user-info');
+                        const signInButton = document.getElementById('g_id_signin');
+                        
+                        if (userInfo && signInButton) {
+                            userInfo.style.display = 'none';
+                            signInButton.style.display = 'block';
+                        }
+                    }
                 })
-                .catch(error => console.log(error)); isLoading = false;
+                .catch(error => {
+                    console.error('Error checking user status:', error);
+                });
+    };
+
+    function selectBtnHandler() {
+        document.getElementById('view-galleries-btn')?.addEventListener('click', selectGallery);
+        document.querySelector('.close')?.addEventListener('click', () => {
+            document.getElementById('galleries-modal').style.display = 'none';
+    });
+    }
+
+
+    async function fetchGallery(galleryId) {
+        const response = await fetch(`/api/galleries/${galleryId}/artworks`);
+        const data = await response.json();
+        
+        if (data.status === 'success') {
+            displayArtworks_galleryView(data.artworks);
         }
+    }
+    
 
-
-
-        // Display the artwork in the page
-        function displayArtworks(artworks) {
-            const container = document.getElementById("gallery-artwork");
-            //   container.innerHTML = ''
+    // Display the artwork in the page
+    function displayArtworks_galleryView(artworks) {
+        const container = document.getElementById("gallery-artwork");
+        //container.innerHTML = '';
+        let i = 0;
+        artworks.forEach(artwork => {
             
-            artworks.forEach(artwork => {
-                
-                art_each = document.createElement("div");
-                art_each.innerHTML = `
-                    <img src="${`https://www.artic.edu/iiif/2/${artwork.image_id}/full/400,/0/default.jpg`}">
-                        <button class="save-btn"><i class="fas fa-bookmark"></i></button>
-                         <!-- ADD DATABASE CONNECTION HERE WHEN SAVE IS CLICKED -->
-                        <h3 style="margin-bottom:5px; margin-top: 10px">${artwork.title}</h3>
-                        <p"margin-bottom:0px; ">${artwork.artist_title}, ${artwork.date_display}</p>
-                        <!-- EXTRA ART DATA IS HERE (but not displayed on screen. Put in database?) -->
-                        <!-- <p>${artwork.artist_display}</p> -->
-                        <!-- <p>${artwork.classification_titles}</p>-->
+            art_each = document.createElement("div");
+            art_each.innerHTML = `
+                <img src="${`https://www.artic.edu/iiif/2/${artwork.image_id}/full/400,/0/default.jpg`}">
+                    <button class="remove-button" id="rmv-btn-${i}">Remove Artwork</button>
+                    <!-- ADD DATABASE CONNECTION HERE WHEN SAVE IS CLICKED -->
+                    <h3 style="margin-bottom:5px; margin-top: 10px">${artwork.title}</h3>
+                    <p"margin-bottom:0px; ">${artwork.artist_title}, ${artwork.date_display}</p>
+                    <!-- EXTRA ART DATA IS HERE (but not displayed on screen. Put in database?) -->
+                    <!-- <p>${artwork.artist_display}</p> -->
+                    <!-- <p>${artwork.classification_titles}</p>-->
+            `;
+            container.appendChild(art_each);
 
+            const btn = document.getElementById(`rmv-btn-${i}`);
+            updateRemoveButtonHandler(btn, artwork);
+            i++;
+        });
+    }
 
+    function updateRemoveButtonHandler(btn, artwork) {
+        
+        btn.addEventListener('click', async () => {
+            if (!confirm('Are you sure you want to delete this artwork? This action cannot be undone.')) {
+                return;
+            }
+            const response = await fetch(`/api/galleries/${galleryId}/artworks/${artwork.image_id}`, {
+                method: 'DELETE'
+            });
+            const data = await response.json();
+            if (data.status === 'success') {
+                alert("Artwork removed!");
+                document.getElementById("gallery-artwork").innerHTML = '';
+                fetchGallery(galleryId);
+            }
+        });
+    }
+
+    async function selectGallery() {
+    try {
+        document.getElementById('galleries-modal').style.display = 'block';
+        const response = await fetch('/api/galleries');
+        const data = await response.json();
+        
+        if (data.status === 'success') {
+            const galleriesList = document.getElementById('galleries-list');
+            galleriesList.innerHTML = '';
+            
+            // Set currentGalleryId to the first non-full gallery if none is set
+            currentGalleryId = localStorage.getItem('selectedGalleryId');
+            if (!currentGalleryId && data.galleries.length > 0) {
+                let i=0;
+                while (data.galleries[i].length === 10) { i++; }
+                localStorage.setItem('selectedGalleryId', data.galleries[i].id);
+            }
+            
+            if (data.galleries.length === 0) {
+                galleriesList.innerHTML = `
+                    <div class="empty-gallery">
+                        <p>You don't have any galleries yet. Create one to start saving artworks!</p>
+                    </div>
                 `;
-                container.appendChild(art_each);
+                return;
+            }
+            
+            data.galleries.forEach(gallery => {
+                const galleryItem = document.createElement('div');
+                galleryItem.className = 'gallery-item';
                 
+                const formattedDate = new Date(gallery.createdAt).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                
+                galleryItem.innerHTML = `
+
+                    <div class="gallery-header">
+                        <div>
+                            <h3 class="gallery-title"><a href="galleryview.html?id=${gallery.id}&num=${gallery.number}" style="text-decoration: none; color: inherit;">
+            Gallery ${gallery.number}
+        </a></h3>
+                            <div class="gallery-meta">
+                                Created on ${formattedDate} • ${gallery.artworkCount} artwork${gallery.artworkCount !== 1 ? 's' : ''}
+                            </div>
+                        </div>
+                        <div class="gallery-actions">
+                            <a href="galleryview.html?id=${gallery.id}&num=${gallery.number}">
+                                <button class="gallery-btn view-btn" id="view-gallery-btn">
+                                    View
+                                </button>
+                            </a>
+                            <button onclick="deleteGallery('${gallery.id}')" class="gallery-btn delete-btn">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                    <div class="gallery-artworks">
+                        ${gallery.artworks.length > 0 ? 
+                            gallery.artworks.map(artwork => `
+                                <div class="artwork-item">
+                                    <a href="galleryview.html?id=${gallery.id}&num=${gallery.number}">
+                                    <img src="https://www.artic.edu/iiif/2/${artwork.image_id}/full/400,/0/default.jpg" 
+                                         alt="${artwork.title}">
+                                                             </a>
+
+                                    <div class="artwork-info">
+                                        ${artwork.title}<br>
+                                        ${artwork.artist_title}
+                                    </div>
+                                </div>
+                            `).join('') :
+                            '<div class="empty-gallery">No artworks in this gallery yet</div>'
+                        }
+                    </div>
+            
+                `;
+
+                galleriesList.appendChild(galleryItem);
             });
         }
-
-    
-            function checkScrollPosition() {
-            const scrollPosition = window.innerHeight + window.scrollY;
-            const bottomPosition = document.documentElement.scrollHeight;
-            
-            if (scrollPosition >= bottomPosition - 100) { 
-                // fetch again
-                const query = document.getElementById('searchInput').value.trim();
-                if (query) {
-                    fetchArtwork(query); 
-                }
-            }
-        }
-        window.addEventListener('scroll', checkScrollPosition);
-
-        window.onload = fetchArtwork("France");
+    } catch (error) {
+        console.error('Error fetching galleries:', error);
+        alert('Failed to fetch galleries');
+    }
+}
+    function setAndLoad(gallery) {
+        window.location = `galleryview.html?id=${gallery.id}&num=${gallery.number}`;
+    }
     </script>
 </body>
 </html>
