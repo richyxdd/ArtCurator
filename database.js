@@ -196,6 +196,14 @@ app.get('/galleryview.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'galleryview.html'));
 });
 
+//
+app.get('/about.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'about.html'));
+});
+
+app.get('/buy_tickets.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'buy_tickets.html'));
+});
 
 // User information endpoint
 app.get('/api/user', (req, res) => {
