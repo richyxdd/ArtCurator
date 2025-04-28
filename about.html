@@ -6,19 +6,92 @@
     <title>About ArtCurator</title>
     <link href="https://fonts.googleapis.com/css2?family=Vidaloka&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #faf3f3; font-family: 'Vidaloka', serif; }
-        h1 { color: #5d071e; text-align: center; }
-        p { max-width: 800px; margin: 20px auto; font-size: 16px; text-align: center; line-height: 30px; }
-        .nav-btn { padding: 8px 20px; border-radius: 20px; text-decoration: none; font-weight: 500; font-size: 14px; background-color: #e8e8e8; color: #333; margin: 10px; display: inline-block; }
-        .nav-container { text-align: center; margin-top: 20px; }
+        body { background-color: #faf3f3; font-family: 'Vidaloka', serif; margin: 0; padding: 20px; }
+        h1 { color: #5d071e; text-align: center; margin-bottom: 10px; }
+        h3 { color: #5d071e; text-align: center; font-size: 20px; margin-top: 5px; margin-bottom: 40px; }
+        .feature-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        .feature-block {
+            background-color: white;
+            border: 2px solid #5d071e;
+            border-radius: 10px;
+            width: 250px;
+            height: 250px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            font-size: 18px;
+        }
+        .main-text, .quote {
+            background-color: #fff0f5;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 900px;
+            margin: 0 auto 50px auto;
+            text-align: center;
+            font-size: 16px;
+            line-height: 28px;
+        }
+        .nav-btn {
+            padding: 10px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 16px;
+            background-color: #e8e8e8;
+            color: #333;
+            display: inline-block;
+            text-align: center;
+        }
+        .nav-container { text-align: center; }
     </style>
 </head>
 <body>
-    <h1>About ArtCurator</h1><br>
-    <p>ArtCurator is your personal space to explore, save, and curate beautiful works of art. Our mission is to make art more accessible by letting you create your own galleries, view them anytime, and deepen your appreciation for creativity from around the world.</p>
-    <p>As a special bonus, active gallery creators get exclusive discounts on tickets to top art museums in major cities like New York, Boston, and Chicago.</p><br>
+
+    <h1>About ArtCurator</h1>
+    <h3>Discover. Curate. Experience.</h3>
+
+    <div class="main-text">
+        <p>ArtCurator is your personal space to explore, save, and curate beautiful works of art. 
+        Our mission is to make art more accessible by letting you create your own galleries, view them anytime, 
+        and deepen your appreciation for creativity from around the world.</p>
+
+        <p>As a special bonus, active gallery creators get exclusive discounts on tickets to top art museums 
+        in major cities like New York, Boston, and Chicago.</p>
+    </div>
+
+    <div class="feature-container">
+        <div class="feature-block">
+            <i class="fas fa-paint-brush" style="font-size: 40px; color: #5d071e;"></i>
+            <p>Curate Your Collections</p>
+        </div>
+        <div class="feature-block">
+            <i class="fas fa-ticket-alt" style="font-size: 40px; color: #5d071e;"></i>
+            <p>Unlock Museum Discounts</p>
+        </div>
+        <div class="feature-block">
+            <i class="fas fa-heart" style="font-size: 40px; color: #5d071e;"></i>
+            <p>Save and Share Favorites</p>
+        </div>
+    </div>
+
+    <div class="quote">
+        <p>"Art washes away from the soul the dust of everyday life" - Pablo Picasso</p>
+    </div>
+
     <div class="nav-container">
         <a href="index.html" class="nav-btn">Back to Homepage</a>
     </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/all.min.js"></script>
 </body>
 </html>
