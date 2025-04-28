@@ -27,7 +27,14 @@
         padding-bottom: 0px;
     }
 
-    #artwork img { width: 100%; height: auto; border-radius: 6px;  transition: transform 0.5s ease; }
+    /* Added this to clean up formatting with object fit cover */
+        #artwork img { 
+        width: 100%; 
+        height: 300px; 
+        object-fit: cover; 
+        border-radius: 6px;  
+        transition: transform 0.5s ease; 
+    }
 
     #artwork img:hover {
     transform: scale(1.05); /* Slight zoom effect */
@@ -114,7 +121,20 @@ nav{ display: flex; justify-content: space-between; align-items: center; padding
 
 </header>
 
+    <div style="background-color: #fff0f5; padding: 20px; border-radius: 10px; margin-top: 20px;">
+        <h2 style="text-align: center; color: #5d071e;">How It Works</h2>
+        <p style="font-size: 16px; text-align: center;";>
+            <br>Welcome to ArtCurator! Browse stunning photos and create your own personal galleries to view anytime.<br><br>
+            Plus, enjoy exclusive discounts on tickets to top art museums in major cities when you build your collections.<br><br>
+        </p>
+    </div>
 
+    <div style="text-align: center; margin-top: 20px;">
+        <a href="about.html" class="nav-btn galleries-nav">About</a>
+        <a href="#" class="nav-btn galleries-nav">Visit Your Galleries</a>
+        <a href="buy_tickets.html" class="nav-btn galleries-nav">Buy Tickets</a>
+    </div>
+    <br><br><br><br>
     <form id="search-form" class="search-container" onsubmit="handleSearch(event)">
         <input 
             type="text" 
@@ -127,8 +147,7 @@ nav{ display: flex; justify-content: space-between; align-items: center; padding
         </button>
     </form>
 
-
-    
+        
     <div id="artwork"> </div>
     
     <div id="footer">
@@ -142,10 +161,7 @@ nav{ display: flex; justify-content: space-between; align-items: center; padding
                 <a href="https://instagram.com/artcurator">Instagram</a> 
             </p>
         </div>
-        <div>
-            <p><a href="#">About</a> | <a href="#">Visit Your Galleries</a></p>
-        </div>
-
+            
     </div> 
     <script>
          let page = 1;
