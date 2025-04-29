@@ -197,8 +197,7 @@
         }
         #footer a { text-decoration: none; color: #333; }
         
-        /* Responsive changes for mobile */
-        @media screen and (max-width: 768px) {
+       @media screen and (max-width: 768px) {
             #artwork {
                 grid-template-columns: repeat(2, 1fr);
                 padding: 20px;
@@ -220,10 +219,40 @@
                 height: auto;
             }
         
+            nav {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+        
             nav h1 {
                 font-size: 30px;
-                margin-left: 20px;
+                margin-left: 0;
+                margin-bottom: 10px;
+            }
+        
+            .auth-container {
+                flex-direction: column;
+                align-items: center;
                 text-align: center;
+            }
+        
+            .auth-container .user-info {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+        
+            .auth-container a {
+                margin: 5px 0;
+            }
+        
+            /* Important: fix the navigation button flex group */
+            .nav-btn-container {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px;
             }
         }
         
@@ -278,7 +307,7 @@
     <!-- ADDED: Navigation Buttons -->
     <div style="text-align: center; margin-top: 2px;">
       
-        <div style="display: flex; justify-content: center; margin: 10px 0; margin-bottom: 30px; gap: 15px;">
+        <div class="nav-btn-container" style="margin: 10px 0 30px 0;">
             <a href="about.html" class="nav-btn galleries-nav">About</a>
 
             <div id="g_id_signin"></div>
