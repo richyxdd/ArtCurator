@@ -18,7 +18,7 @@ function initializeGoogleSignIn() {
                     theme: 'outline',
                     size: 'large',
                     type: 'standard',
-                    shape: 'rectangular',
+                    shape: 'pill',
                     text: 'signin_with',
                     logo_alignment: 'left'
                 }
