@@ -6,7 +6,7 @@ function handleSearch(event) {
             page = 1;
             document.getElementById("artwork").innerHTML = ''; // Clear existing results
             fetchArtwork(query);
-        } else { alert('Please enter a term to search for.');}
+        } else { alertBox('Please enter a term to search for.', 'empty');}
     }
     // get API
     function fetchArtwork(query) {
@@ -123,7 +123,7 @@ function handleSearch(event) {
             console.log(typeof currentGalleryId);
             console.log(currentGalleryId);
             if (currentGalleryId === "null" || currentGalleryId === null) {
-                alert('Please create a gallery first or select an existing gallery from the View Galleries menu');
+                alertBox('Please create a gallery first or select an existing gallery from the View Galleries menu', "error");
                 return;
             }
 
@@ -143,9 +143,10 @@ function handleSearch(event) {
                         if (remData.status === 'success') {
                             btn.innerHTML = `<i class="far fa-bookmark"></i>`;
                             btn.classList.remove('saved');
-                            alert(`Artwork removed from Gallery`);
+                            alertBox(`Artwork removed from Gallery`, "remove");
                         } else {
-                            alert(remData.message || 'Failed to remove artwork');
+                            const alertText = (remData.message || 'Failed to remove artwork');
+                            alertBox(alertText, 'error');
                         }
                     } else {    // add it otherwise
                         const addResponse = await fetch(`/api/galleries/${currentGalleryId}/artworks`, {
@@ -159,16 +160,34 @@ function handleSearch(event) {
                         if (addData.status === 'success') {
                             btn.innerHTML = '<i class="fas fa-bookmark"></i>';
                             btn.classList.add('saved');                                
-                            alert(`Artwork saved to Gallery ${addData.gallery.number}!`);
+                            alertBox(`Artwork saved to Gallery ${addData.gallery.number}!`, 'add');
                         } else {
-                            alert(addData.details || 'Failed to save artwork');
+                            const alertText = (addData.details || 'Failed to save artwork');
+                            alertBox(alertText, 'error');
                         }
                     }
                 }
 
             } catch (error) {
                 console.error('Error saving/deleting artwork:', error);
-                alert('Failed to save/delete artwork');
+                alertBox('Failed to save/delete artwork', 'error');
             }
         });
     }
+
+    function alertBox(text, type) {
+        const alert = document.getElementById("alert");
+        alert.style.display = "block";
+        if (type === "success" || type === "add") {
+            alert.style.backgroundColor = "#04aa6d";
+        } else if (type === "create" || type === "select") {
+            alert.style.backgroundColor = "#2196F3";
+        } else if (type === "error") {
+            alert.style.backgroundColor = "#f39d21";
+        } else {
+            alert.style.backgroundColor = "red";
+        }
+    
+    
+        document.getElementById("alert-text").innerHTML = text;
+    } 

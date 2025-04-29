@@ -3,7 +3,7 @@
 // Add a function to set the current gallery
 async function setCurrentGallery(galleryId) {
     localStorage.setItem('selectedGalleryId', galleryId);
-    alert('Gallery selected! You can now save artworks to this gallery.');
+    alertBox("Gallery selected! You can now save artworks to this gallery.", "select");
     document.getElementById('galleries-modal').style.display = 'none';
     await reloadArtworks();
 }
@@ -20,14 +20,15 @@ async function createGallery() {
         const data = await response.json();
         if (data.status === 'success') {
             localStorage.setItem('selectedGalleryId', data.gallery.id);
-            alert(`Gallery ${data.gallery.number} created successfully! You can now save artworks to this gallery.`);
+            alertBox(`Gallery ${data.gallery.number} created successfully! You can now save artworks to this gallery.`, 'create');
             await viewGalleries();
         } else {
-            alert(data.details || 'Failed to create gallery');
+            const alertText = (data.details || 'Failed to create gallery');
+            alertBox(alertText, 'error');
         }
     } catch (error) {
         console.error('Error creating gallery:', error);
-        alert('Failed to create gallery');
+        alertBox('Failed to create gallery', 'error');
     }
 }
 
@@ -40,14 +41,6 @@ async function viewGalleries() {
         if (data.status === 'success') {
             const galleriesList = document.getElementById('galleries-list');
             galleriesList.innerHTML = '';
-            
-            // Set currentGalleryId to the first non-full gallery if none is set
-            currentGalleryId = localStorage.getItem('selectedGalleryId');
-            if (!currentGalleryId && data.galleries.length > 0) {
-                let i=0;
-                while (data.galleries[i].length === 10) { i++; }
-                localStorage.setItem('selectedGalleryId', data.galleries[i].id);
-            }
             
             if (data.galleries.length === 0) {
                 galleriesList.innerHTML = `
@@ -67,12 +60,11 @@ async function viewGalleries() {
                     month: 'long',
                     day: 'numeric'
                 });
-                let i = 0;
                 galleryItem.innerHTML = `
 
                     <div class="gallery-header">
                         <div>
-                            <h3 class="gallery-title" id="gallery-title-link-${i}"><a href="galleryview.html?id=${gallery.id}&num=${gallery.number}" style="text-decoration: none; color: inherit;" >
+                            <h3 class="gallery-title" id="gallery-title-link-${gallery.number}"><a href="galleryview.html?id=${gallery.id}&num=${gallery.number}" style="text-decoration: none; color: inherit;" >
             Gallery ${gallery.number}
         </a></h3>
                             <div class="gallery-meta">
@@ -80,7 +72,7 @@ async function viewGalleries() {
                             </div>
                         </div>
                         <div class="gallery-actions">
-                            <a href="galleryview.html?id=${gallery.id}&num=${gallery.number}" id="view-btn-${i}">
+                            <a href="galleryview.html?id=${gallery.id}&num=${gallery.number}" id="view-btn-${gallery.number}">
                                 <button class="gallery-btn view-btn">
                                     View
                                 </button>
@@ -113,19 +105,25 @@ async function viewGalleries() {
                     </div>
             
                 `;
+                
                 galleriesList.appendChild(galleryItem);
-                if (gallery.artworks.length === 0) {
-                    const btn = document.getElementById(`view-btn-${i}`);
-                    btn.style.display = "none";
-                    const galleryTitle = document.getElementById(`gallery-title-link-${i}`);
-                    galleryTitle.innerHTML = `Gallery ${gallery.number}`;
-                }
-                i++;
+
+                const btn = document.getElementById(`view-btn-${gallery.number}`);
+                const galleryTitle = document.getElementById(`gallery-title-link-${gallery.number}`);
+                updateViewGalleryHandler(btn, galleryTitle, gallery);
             });
         }
     } catch (error) {
         console.error('Error fetching galleries:', error);
-        alert('Failed to fetch galleries');
+        alertBox('Failed to fetch galleries', 'error');
+    }
+}
+
+function updateViewGalleryHandler(btn, galleryTitle, gallery) {
+    if (gallery.artworks.length <= 0) {
+        btn.style.display = "none";
+        galleryTitle.innerText = `Gallery ${gallery.number}`;
+        console.log(gallery.number);
     }
 }
 
@@ -147,16 +145,33 @@ async function deleteGallery(galleryId) {
             if (currentGalleryId === galleryId) {
                 localStorage.setItem('selectedGalleryId', null);
             }
-            alert('Gallery deleted successfully!');
-            console.log("Selected Gallery check3: ", localStorage.getItem('selectedGalleryId'));
+            alertBox('Gallery deleted successfully!', "delete");
 
             await reloadArtworks();
             await viewGalleries();
         } else {
-            alert(data.details || 'Failed to delete gallery');
+            const alertText = (data.details || 'Failed to delete gallery');
+            alertBox(alertText, "error");
         }
     } catch (error) {
         console.error('Error deleting gallery:', error);
-        alert('Failed to delete gallery');
+        alertBox('Failed to delete gallery', "error");
     }
 }
+
+function alertBox(text, type) {
+    const alert = document.getElementById("alert");
+    alert.style.display = "block";
+    if (type === "success" || type === "add") {
+        alert.style.backgroundColor = "#04aa6d";
+    } else if (type === "create" || type === "select") {
+        alert.style.backgroundColor = "#2196F3";
+    } else if (type === "error") {
+        alert.style.backgroundColor = "#f39d21";
+    } else {
+        alert.style.backgroundColor = "red";
+    }
+
+
+    document.getElementById("alert-text").innerHTML = text;
+} 

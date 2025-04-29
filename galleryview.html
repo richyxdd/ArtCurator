@@ -435,7 +435,7 @@
             });
             const data = await response.json();
             if (data.status === 'success') {
-                alert("Artwork removed!");
+                alertBox("Artwork removed!", 'remove');
                 document.getElementById("gallery-artwork").innerHTML = '';
                 fetchGallery(galleryId);
             }
@@ -527,12 +527,13 @@
         }
     } catch (error) {
         console.error('Error fetching galleries:', error);
-        alert('Failed to fetch galleries');
+        alertBox('Failed to fetch galleries', 'error');
     }
 }
     function setAndLoad(gallery) {
         window.location = `galleryview.html?id=${gallery.id}&num=${gallery.number}`;
     }
+
     </script>
 </body>
 </html>
