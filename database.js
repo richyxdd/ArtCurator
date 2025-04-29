@@ -57,13 +57,13 @@ passport.use(new GoogleStrategy({
     clientSecret: GOOGLE_CLIENT_SECRET,
     callbackURL: "http://localhost:3000/auth/google/callback"
 },
-function(accessToken, refreshToken, profile, email , cb) {
-    console.log(profile);
-    User.findOrCreate({ username: profile.displayName, googleId: profile.id }, function (err, user) {
-        return cb(err, user);
-    });
+    function(accessToken, refreshToken, profile, email , cb) {
+        console.log(profile);
+        User.findOrCreate({ username: profile.displayName, googleId: profile.id }, function (err, user) {
+            return cb(err, user);
+        });
     }
-    ));
+));
 
 // Serialize and deserialize user
 passport.serializeUser((user, done) => {
@@ -161,8 +161,6 @@ app.post('/auth/google/callback', async (req, res) => {
 });
 
 
-
-
 // Logout route
 app.get('/logout', (req, res) => {
     req.logout(() => {
@@ -180,11 +178,14 @@ const isAuthenticated = (req, res, next) => {
 
 
 // Constants for gallery limits
-const MAX_GALLERY_NUM = 5;
+const MAX_GALLERY_NUM = 10;
 const MAX_GALLERY_SIZE = 10;
 
 // serve public folder (contains js and css files)
 app.use(express.static(path.join(__dirname, 'public')));
+
+// serve images folder
+app.use(express.static(path.join(__dirname, 'images')));
 
 // load homepage and css
 app.get('/', (req, res) => {
