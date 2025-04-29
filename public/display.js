@@ -1,5 +1,6 @@
 function handleSearch(event) {
     event.preventDefault();
+    document.getElementById('van-gogh-text').style.display = 'none';
         const query = document.getElementById('searchInput').value.trim();
         localStorage.setItem('query', query);
         if (query) {
