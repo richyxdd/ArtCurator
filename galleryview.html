@@ -384,11 +384,16 @@
 
 
     async function fetchGallery(galleryId) {
-        const response = await fetch(`/api/galleries/${galleryId}/artworks`);
-        const data = await response.json();
-        
-        if (data.status === 'success') {
-            displayArtworks_galleryView(data.artworks);
+        try {
+            const response = await fetch(`/api/galleries/${galleryId}/artworks`);
+            const data = await response.json();
+            
+            if (data.status === 'success') {
+                displayArtworks_galleryView(data.artworks);
+            }
+        }
+        catch (error) {
+            console.log('Error fetching gallery: ', error);
         }
     }
     

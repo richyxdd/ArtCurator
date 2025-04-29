@@ -126,6 +126,8 @@ async function deleteGallery(galleryId) {
     if (!confirm('Are you sure you want to delete this gallery? This action cannot be undone.')) {
         return;
     }
+    // get current galleryId from localStorage
+    let currentGalleryId = localStorage.getItem('selectedGalleryId');
 
     try {
         const response = await fetch(`/api/galleries/${galleryId}`, {
@@ -134,15 +136,15 @@ async function deleteGallery(galleryId) {
         
         const data = await response.json();
 
-        // get current galleryId from localStorage
-        currentGalleryId = localStorage.getItem('selectedGalleryId');
-
         if (data.status === 'success') {
             if (currentGalleryId === galleryId) {
-                currentGalleryId = null;
+                localStorage.setItem('selectedGalleryId', null);
             }
-            alert('Gallery deleted successfully');
-            viewGalleries();
+            alert('Gallery deleted successfully!');
+            console.log("Selected Gallery check3: ", localStorage.getItem('selectedGalleryId'));
+
+            await reloadArtworks();
+            await viewGalleries();
         } else {
             alert(data.details || 'Failed to delete gallery');
         }

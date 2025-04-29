@@ -278,6 +278,10 @@
         let isLoading = false;
         let initialImageNum = 9;
         let currentGalleryId = (localStorage.getItem('selectedGalleryId') || null);
+        
+        // Set initial search and store in local storage
+        const initialSearch = "Van Gogh";
+        localStorage.setItem('query', initialSearch);
 
         window.addEventListener('scroll', checkScrollPosition);
 

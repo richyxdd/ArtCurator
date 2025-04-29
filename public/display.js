@@ -1,7 +1,7 @@
 function handleSearch(event) {
     event.preventDefault();
         const query = document.getElementById('searchInput').value.trim();
-        
+        localStorage.setItem('query', query);
         if (query) {
             page = 1;
             document.getElementById("artwork").innerHTML = ''; // Clear existing results
@@ -18,6 +18,7 @@ function handleSearch(event) {
             .then(data => {
                 data = JSON.parse(data)
                 displayArtworks(data.data);
+                setCurrentDisplayArtworks(data.data);
                 page++; // Increment page for the next request
             })
             .catch(error => {
@@ -28,10 +29,22 @@ function handleSearch(event) {
             });
     }
 
+    // converts a json object of artworks to a string, then sets it in localStorage
+    function setCurrentDisplayArtworks(artworks) {
+        const artworksString = JSON.stringify(artworks);
+        localStorage.setItem('artworks', artworksString);
+    }
+
+    // returns a JSON object of artworks from localStorage
+    function getCurrentDisplayArtworks() {
+        let artworksString = localStorage.getItem('artworks');
+        return JSON.parse(artworksString);
+    }
+
     async function retrieveArtworks() {
         let artArray = [];
-        currentGalleryId = localStorage.getItem('selectedGalleryId');
-        if (currentGalleryId !== null) {
+        let currentGalleryId = localStorage.getItem('selectedGalleryId');
+        if (currentGalleryId !== null && currentGalleryId !== "null") {
             try {
                 const response = await fetch(`/api/galleries/${currentGalleryId}/artworks`);
                 const data = await response.json();
@@ -99,14 +112,17 @@ function handleSearch(event) {
         // Clear existing artworks
         document.getElementById("artwork").innerHTML = '';
         // Reload artwork
-        location.reload();
+        const artworks = getCurrentDisplayArtworks();
+        await displayArtworks(artworks);
     }
 
     // Update the save button handler to show which gallery is selected
     function updateSaveButtonHandler(btn, artwork) {
         btn.addEventListener('click', async () => {
-            currentGalleryId = localStorage.getItem('selectedGalleryId');
-            if (!currentGalleryId) {
+            let currentGalleryId = localStorage.getItem('selectedGalleryId');
+            console.log(typeof currentGalleryId);
+            console.log(currentGalleryId);
+            if (currentGalleryId === "null" || currentGalleryId === null) {
                 alert('Please create a gallery first or select an existing gallery from the View Galleries menu');
                 return;
             }
