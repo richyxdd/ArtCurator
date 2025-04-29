@@ -184,9 +184,6 @@ const MAX_GALLERY_SIZE = 10;
 // serve public folder (contains js and css files)
 app.use(express.static(path.join(__dirname, 'public')));
 
-// serve images folder
-app.use(express.static(path.join(__dirname, 'images')));
-
 // load homepage and css
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'homepage.html'));
