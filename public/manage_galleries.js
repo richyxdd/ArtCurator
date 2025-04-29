@@ -67,12 +67,12 @@ async function viewGalleries() {
                     month: 'long',
                     day: 'numeric'
                 });
-                
+                let i = 0;
                 galleryItem.innerHTML = `
 
                     <div class="gallery-header">
                         <div>
-                            <h3 class="gallery-title"><a href="galleryview.html?id=${gallery.id}&num=${gallery.number}" style="text-decoration: none; color: inherit;">
+                            <h3 class="gallery-title" id="gallery-title-link-${i}"><a href="galleryview.html?id=${gallery.id}&num=${gallery.number}" style="text-decoration: none; color: inherit;" >
             Gallery ${gallery.number}
         </a></h3>
                             <div class="gallery-meta">
@@ -80,7 +80,7 @@ async function viewGalleries() {
                             </div>
                         </div>
                         <div class="gallery-actions">
-                            <a href="galleryview.html?id=${gallery.id}&num=${gallery.number}">
+                            <a href="galleryview.html?id=${gallery.id}&num=${gallery.number}" id="view-btn-${i}">
                                 <button class="gallery-btn view-btn">
                                     View
                                 </button>
@@ -114,6 +114,13 @@ async function viewGalleries() {
             
                 `;
                 galleriesList.appendChild(galleryItem);
+                if (gallery.artworks.length === 0) {
+                    const btn = document.getElementById(`view-btn-${i}`);
+                    btn.style.display = "none";
+                    const galleryTitle = document.getElementById(`gallery-title-link-${i}`);
+                    galleryTitle.innerHTML = `Gallery ${gallery.number}`;
+                }
+                i++;
             });
         }
     } catch (error) {
