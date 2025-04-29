@@ -193,6 +193,40 @@
             flex-direction: column;
         }
         #footer a { text-decoration: none; color: #333; }
+        
+        /* Responsive changes for mobile */
+        @media screen and (max-width: 768px) {
+            #artwork {
+                grid-template-columns: repeat(2, 1fr); /* 2 artworks side by side */
+                padding: 20px;
+            }
+        
+            #searchInput {
+                width: 90%;
+            }
+        
+            .nav-btn {
+                display: block;
+                width: 80%;
+                margin: 10px auto;
+                text-align: center;
+            }
+        
+            img {
+                max-width: 90%;
+                height: auto;
+            }
+        }
+        
+        @media screen and (max-width: 480px) {
+            #artwork {
+                grid-template-columns: 1fr; /* 1 artwork per row */
+            }
+        
+            .nav-btn {
+                width: 90%;
+            }
+        }
     </style>
 </head>
 <body>
